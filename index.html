@@ -117,12 +117,14 @@
             top: 0; left: 0; right: 0;
             background-color: var(--header-bg);
             z-index: 50;
-            padding-top: env(safe-area-inset-top); /* This fills the notch area */
+            padding-top: env(safe-area-inset-top);
             border-bottom: 1px solid var(--border);
+            padding-bottom: 20px; /* <--- NEW LINE: Gives the buttons room to breathe */
+            /* ensure 'height: 60px' is GONE */
         }
         
         .content-spacer {
-            padding-top: calc(var(--header-height) + env(safe-area-inset-top));
+            padding-top: calc(90px + env(safe-area-inset-top)); 
         }
         
         .tag-pill {
