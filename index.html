@@ -247,7 +247,7 @@
             return (
                 <div onClick={() => onClick(p)} className={`card-frame p-6 rounded-lg active:scale-95 cursor-pointer ${cardClass}`} style={{ '--accent-color': accent }}>
                     <div className="flex justify-between items-start mb-2 relative z-10">
-                        <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: (isMorris || isVelvet) ? 'inherit' : accent }}>
+                        <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: (isMorris || isVelvet || isPonting) ? 'inherit' : accent }}>
                             {p.title || 'Untitled'}
                             {p.type === 'song' && <span className="opacity-50 text-sm"><Icon name="Music" size={14} /></span>}
                         </h3>
