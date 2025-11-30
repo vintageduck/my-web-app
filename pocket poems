@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pocket</title>
+    
+    <!-- Custom Icon -->
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=P&background=1c1c1f&color=8a7e66&size=512&length=1&font-size=0.5">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --font-cormorant: 'Cormorant Garamond', serif;
+            --font-playfair: 'Playfair Display', serif;
+            --font-lora: 'Lora', serif;
+            --transition: 0.3s ease;
+        }
+
+        /* --- THEME COLORS --- */
+        body.theme-dusk {
+            --bg-main: #121214;
+            --bg-card: #1c1c1f;
+            --bg-input: #27272a;
+            --text-main: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --border: rgba(255,255,255,0.1);
+            --shadow-color: rgba(0,0,0,0.4);
+            --bg-button: rgba(255,255,255,0.05);
+        }
+
+        body.theme-dawn {
+            --bg-main: #f0ebe6;
+            --bg-card: #fdfbf7;
+            --bg-input: #e6e0d8;
+            --text-main: #292524;
+            --text-muted: #78716c;
+            --border: rgba(0,0,0,0.08);
+            --shadow-color: rgba(0,0,0,0.05);
+            --bg-button: rgba(0,0,0,0.03);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            font-family: var(--current-font, var(--font-cormorant));
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        /* Utilities */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Card Styles */
+        .card-frame {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Decorative Borders based on Theme Color */
+        .card-frame::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid var(--accent-color, #8a7e66); opacity: 0.2; pointer-events: none; z-index: 0;
+        }
+        
+        .tag-pill {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 10px;
+            border-radius: 99px;
+            background: var(--bg-button);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .tag-pill.active {
+            background: var(--accent-color);
+            color: var(--bg-main);
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body class="theme-dusk">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ICONS ---
+        const Icon = ({ name, size = 20, className, style }) => {
+            const icons = {
+                ArrowLeft: <path d="m12 19-7-7 7-7 M19 12H5"/>,
+                Plus: <path d="M5 12h14 M12 5v14"/>,
+                Trash: <path d="M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>,
+                Sun: <g><circle cx="12" cy="12" r="4"/><path d="M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M6.34 17.66l-1.41-1.41 M19.07 4.93l-1.41 1.41"/></g>,
+                Moon: <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>,
+                // Simple Cog for Settings
+                Settings: <g><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>,
+                Copy: <g><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g>,
+                Search: <g><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g>,
+                Sort: <path d="M3 6h18M7 12h10M10 18h4"/>
+            };
+            return (
+                <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+                    {icons[name]}
+                </svg>
+            );
+        };
+
+        // --- CONSTANTS ---
+        const THEMES = [
+            { id: 'gold', color: '#8a7e66', name: 'Gold' },
+            { id: 'sapphire', color: '#5e7b87', name: 'Sapphire' },
+            { id: 'sage', color: '#738062', name: 'Sage' },
+            { id: 'rose', color: '#9c6b6b', name: 'Rose' },
+            { id: 'slate', color: '#64748b', name: 'Slate' }
+        ];
+
+        const FONTS = [
+            { id: 'cormorant', name: 'Cormorant', css: "'Cormorant Garamond', serif" },
+            { id: 'playfair', name: 'Playfair', css: "'Playfair Display', serif" },
+            { id: 'lora', name: 'Lora', css: "'Lora', serif" }
+        ];
+
+        const SORT_OPTIONS = [
+            { id: 'added_desc', label: 'Added (Newest)' },
+            { id: 'added_asc', label: 'Added (Oldest)' },
+            { id: 'written_desc', label: 'Written (Newest)' },
+            { id: 'written_asc', label: 'Written (Oldest)' },
+        ];
+
+        const DEFAULT_POEM = {
+            id: 'desiderata-default',
+            title: 'Desiderata',
+            author: 'Max Ehrmann',
+            publishedDate: '1927',
+            content: `Go placidly amid the noise and the haste, and remember what peace there may be in silence. As far as possible, without surrender, be on good terms with all persons.\n\nSpeak your truth quietly and clearly; and listen to others, even to the dull and the ignorant; they too have their story.`,
+            tags: ['Inspiration'],
+            theme: 'gold'
+        };
+
+        // --- APP ---
+        const App = () => {
+            const [view, setView] = useState('library'); // 'library' | 'read' | 'add' | 'settings'
+            const [isLoaded, setIsLoaded] = useState(false);
+            
+            // Data
+            const [poems, setPoems] = useState([]);
+            const [activePoem, setActivePoem] = useState(null);
+
+            // Filters & Sort
+            const [searchQuery, setSearchQuery] = useState('');
+            const [activeTag, setActiveTag] = useState('All');
+            const [sortBy, setSortBy] = useState('added_desc');
+
+            // Global Config
+            const [appTheme, setAppTheme] = useState('dusk'); 
+            const [activeFont, setActiveFont] = useState('cormorant');
+
+            // Editor State
+            const [newTitle, setNewTitle] = useState('');
+            const [newAuthor, setNewAuthor] = useState('');
+            const [newDate, setNewDate] = useState('');
+            const [newContent, setNewContent] = useState('');
+            const [newTags, setNewTags] = useState('');
+            const [newColor, setNewColor] = useState('gold');
+
+            // Load Data
+            useEffect(() => {
+                try {
+                    const savedPoems = JSON.parse(localStorage.getItem('pp_poems_v6')); // Keeps same storage key so you don't lose v6 data
+                    const savedConfig = JSON.parse(localStorage.getItem('pp_config_v6'));
+                    
+                    if (savedPoems) setPoems(savedPoems);
+                    else setPoems([DEFAULT_POEM]);
+
+                    if (savedConfig) {
+                        setAppTheme(savedConfig.theme || 'dusk');
+                        setActiveFont(savedConfig.font || 'cormorant');
+                    }
+                } catch (e) {
+                    console.error("Resetting data", e);
+                    setPoems([DEFAULT_POEM]);
+                }
+                setIsLoaded(true);
+            }, []);
+
+            // Save Data
+            useEffect(() => {
+                if (!isLoaded) return;
+                localStorage.setItem('pp_poems_v6', JSON.stringify(poems));
+                localStorage.setItem('pp_config_v6', JSON.stringify({ theme: appTheme, font: activeFont }));
+                
+                // Apply Styles
+                document.body.className = `theme-${appTheme}`;
+                const fontCSS = FONTS.find(f => f.id === activeFont)?.css || FONTS[0].css;
+                document.documentElement.style.setProperty('--current-font', fontCSS);
+            }, [poems, appTheme, activeFont, isLoaded]);
+
+            // Handlers
+            const toggleAppTheme = () => setAppTheme(prev => prev === 'dusk' ? 'dawn' : 'dusk');
+
+            const handleSave = () => {
+                if (!newContent) return;
+                const tagsArray = newTags.split(/[, ]+/).filter(Boolean);
+                
+                const poem = {
+                    id: Date.now().toString(),
+                    title: newTitle || 'Untitled',
+                    author: newAuthor,
+                    publishedDate: newDate,
+                    content: newContent,
+                    tags: tagsArray.length ? tagsArray : [],
+                    theme: newColor
+                };
+                
+                setPoems([poem, ...poems]);
+                
+                // Reset & Close
+                setNewTitle(''); setNewAuthor(''); setNewDate(''); setNewContent(''); setNewTags(''); 
+                setNewColor('gold');
+                setView('library');
+            };
+
+            const handleDelete = (id, e) => {
+                if (e) e.stopPropagation(); // Stop click from hitting the card
+                
+                if (confirm("Permanently delete this poem?")) {
+                    setPoems(prev => prev.filter(p => p.id !== id));
+                    if (activePoem?.id === id) {
+                        setActivePoem(null);
+                        setView('library');
+                    }
+                }
+            };
+
+            const exportMarkdown = () => {
+                let md = "# Poetry Pocket\n\n";
+                poems.forEach(p => {
+                    md += `## ${p.title}\n*${p.author || 'Unknown'} (${p.publishedDate || 'n.d.'})*\n\n${p.content}\n\nTags: #${p.tags.join(' #')}\n\n---\n\n`;
+                });
+                navigator.clipboard.writeText(md).then(() => alert("Copied to clipboard for Obsidian!"));
+            };
+
+            // Helpers
+            const getAccent = (id) => THEMES.find(t => t.id === id)?.color || '#8a7e66';
+            
+            // Get all unique tags
+            const allTags = ['All', ...new Set(poems.flatMap(p => p.tags || []))];
+
+            // Processing Poems (Search, Filter, Sort)
+            const getProcessedPoems = () => {
+                let filtered = poems.filter(p => {
+                    const searchLower = searchQuery.toLowerCase();
+                    const matchesSearch = 
+                        (p.title || '').toLowerCase().includes(searchLower) ||
+                        (p.author || '').toLowerCase().includes(searchLower) ||
+                        (p.content || '').toLowerCase().includes(searchLower);
+                    
+                    const matchesTag = activeTag === 'All' ? true : (p.tags || []).includes(activeTag);
+                    return matchesSearch && matchesTag;
+                });
+
+                return filtered.sort((a, b) => {
+                    if (sortBy === 'added_desc') return parseInt(b.id) - parseInt(a.id);
+                    if (sortBy === 'added_asc') return parseInt(a.id) - parseInt(b.id);
+                    if (sortBy === 'written_desc') return (b.publishedDate || '').localeCompare(a.publishedDate || '');
+                    if (sortBy === 'written_asc') return (a.publishedDate || '').localeCompare(b.publishedDate || '');
+                    return 0;
+                });
+            };
+
+            const displayedPoems = getProcessedPoems();
+
+            // --- VIEWS ---
+
+            // 1. READER
+            if (view === 'read' && activePoem) {
+                const accent = getAccent(activePoem.theme);
+                return (
+                    <div className="min-h-screen pb-20 fade-in" style={{ '--accent-color': accent }}>
+                        <div className="p-4 flex justify-between items-center sticky top-0 bg-[var(--bg-main)] bg-opacity-95 backdrop-blur-sm z-50">
+                            <button onClick={() => setView('library')} className="text-[var(--text-muted)] flex items-center gap-2">
+                                <Icon name="ArrowLeft" /> Library
+                            </button>
+                            <button 
+                                onClick={(e) => handleDelete(activePoem.id, e)} 
+                                className="text-red-400 opacity-60 p-2 bg-[var(--bg-input)] rounded-full"
+                            >
+                                <Icon name="Trash" />
+                            </button>
+                        </div>
+
+                        <div className="p-6 flex justify-center">
+                            <div className="w-full max-w-lg card-frame p-8 md:p-12 rounded-lg">
+                                <h1 className="text-3xl md:text-4xl text-center font-bold mb-2 uppercase tracking-wide" style={{ color: accent }}>
+                                    {activePoem.title}
+                                </h1>
+                                <div className="text-center italic opacity-70 mb-8 pb-4 border-b border-[var(--border)] mx-10">
+                                    {activePoem.author} 
+                                    {activePoem.publishedDate && <span className="text-xs ml-1 opacity-60">({activePoem.publishedDate})</span>}
+                                </div>
+                                <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap text-justify">
+                                    {activePoem.content}
+                                </div>
+                                <div className="mt-12 text-center opacity-40 text-xl" style={{ color: accent }}>✦ ✦ ✦</div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. ADD / EDITOR
+            if (view === 'add') {
+                return (
+                    <div className="min-h-screen p-6 pb-20 fade-in">
+                        <div className="flex justify-between items-center mb-6">
+                            <button onClick={() => setView('library')}><Icon name="ArrowLeft" /></button>
+                            <h2 className="text-lg font-bold uppercase tracking-widest">New Poem</h2>
+                            <div className="w-5"></div>
+                        </div>
+
+                        <div className="space-y-6 max-w-lg mx-auto">
+                            <input 
+                                placeholder="Title" value={newTitle} onChange={e => setNewTitle(e.target.value)}
+                                className="w-full bg-transparent border-b border-[var(--border)] py-3 text-2xl font-bold placeholder-opacity-30 placeholder-[var(--text-muted)] outline-none"
+                            />
+                            
+                            <textarea 
+                                placeholder="Paste your poem here..." value={newContent} onChange={e => setNewContent(e.target.value)}
+                                className="w-full h-64 bg-[var(--bg-input)] rounded p-4 text-lg leading-relaxed outline-none resize-none"
+                            />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <input 
+                                    placeholder="Author" value={newAuthor} onChange={e => setNewAuthor(e.target.value)}
+                                    className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none"
+                                />
+                                <input 
+                                    placeholder="Year/Date" value={newDate} onChange={e => setNewDate(e.target.value)}
+                                    className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none text-right"
+                                />
+                            </div>
+
+                            {/* Tags & Theme Section */}
+                            <div className="bg-[var(--bg-card)] p-4 rounded-lg border border-[var(--border)] space-y-4">
+                                <input 
+                                    placeholder="Tags (e.g. Sleep, Nature)" value={newTags} onChange={e => setNewTags(e.target.value)}
+                                    className="w-full bg-transparent text-sm outline-none"
+                                />
+                                
+                                <div className="flex justify-between items-center">
+                                    <div className="flex gap-3">
+                                        {THEMES.map(t => (
+                                            <button 
+                                                key={t.id} onClick={() => setNewColor(t.id)}
+                                                className={`w-6 h-6 rounded-full transition-transform ${newColor === t.id ? 'scale-125 ring-2 ring-[var(--text-main)]' : 'opacity-60'}`}
+                                                style={{ backgroundColor: t.color }}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onClick={handleSave} className="w-full bg-[var(--text-main)] text-[var(--bg-main)] py-4 font-bold uppercase tracking-widest rounded shadow-lg hover:opacity-90 transition-opacity">
+                                Save to Pocket
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 3. SETTINGS
+            if (view === 'settings') {
+                return (
+                    <div className="min-h-screen p-6 pb-20 fade-in">
+                        <div className="flex justify-between items-center mb-8">
+                            <button onClick={() => setView('library')}><Icon name="ArrowLeft" /></button>
+                            <h2 className="text-lg font-bold uppercase tracking-widest">Config</h2>
+                            <div className="w-5"></div>
+                        </div>
+
+                        <div className="space-y-8 max-w-lg mx-auto">
+                            <div>
+                                <h3 className="text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">Typography</h3>
+                                <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
+                                    {FONTS.map(f => (
+                                        <button 
+                                            key={f.id} onClick={() => setActiveFont(f.id)}
+                                            className={`w-full text-left p-4 flex justify-between items-center border-b border-[var(--border)] last:border-0 ${activeFont === f.id ? 'bg-[var(--bg-input)]' : ''}`}
+                                            style={{ fontFamily: f.css }}
+                                        >
+                                            <span className="text-lg">{f.name}</span>
+                                            {activeFont === f.id && <span className="text-xs">ACTIVE</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">Data</h3>
+                                <button onClick={exportMarkdown} className="w-full bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-lg flex items-center gap-3">
+                                    <Icon name="Copy" />
+                                    <span>Copy Backup for Obsidian</span>
+                                </button>
+                                <p className="text-xs text-[var(--text-muted)] mt-2 text-center">
+                                    Safekeeping for your history notes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 4. LIBRARY (Home)
+            return (
+                <div className="min-h-screen flex flex-col relative pb-24">
+                    {/* Header */}
+                    <div className="p-6 pt-12 flex justify-between items-start max-w-lg mx-auto w-full">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight mb-1">Library</h1>
+                            <p className="text-[var(--text-muted)] text-sm italic">{displayedPoems.length} Entries</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button onClick={() => setView('settings')} className="p-2 bg-[var(--bg-input)] rounded-full text-[var(--text-muted)]">
+                                <Icon name="Settings" />
+                            </button>
+                            <button onClick={toggleAppTheme} className="p-2 bg-[var(--bg-input)] rounded-full text-[var(--text-muted)]">
+                                <Icon name={appTheme === 'dusk' ? 'Moon' : 'Sun'} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Filters & Sorting */}
+                    <div className="px-6 mb-4 max-w-lg mx-auto w-full space-y-4">
+                        {/* Search Bar */}
+                        <div className="relative">
+                            <span className="absolute left-3 top-2.5 text-[var(--text-muted)] opacity-50"><Icon name="Search" size={18}/></span>
+                            <input 
+                                type="text" placeholder="Search title, author..." 
+                                value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                                className="w-full bg-[var(--bg-input)] pl-10 pr-4 py-2 rounded-lg text-sm outline-none focus:ring-1 ring-[var(--text-muted)] transition-all"
+                            />
+                        </div>
+
+                        {/* Sort & Tags Row */}
+                        <div className="flex justify-between items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                            {/* Sorting Dropdown (Styled as a pill) */}
+                            <div className="relative shrink-0">
+                                <select 
+                                    value={sortBy} 
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="appearance-none bg-[var(--bg-button)] border border-[var(--border)] text-[var(--text-muted)] text-xs uppercase tracking-wide px-3 py-1.5 rounded-full outline-none pr-8"
+                                >
+                                    {SORT_OPTIONS.map(opt => <option key={opt.id} value={opt.id}>{opt.label}</option>)}
+                                </select>
+                                <div className="absolute right-2 top-1.5 pointer-events-none text-[var(--text-muted)] opacity-50">
+                                    <Icon name="Sort" size={12} />
+                                </div>
+                            </div>
+                            
+                            {/* Tags Scroll */}
+                            <div className="flex gap-2">
+                                {allTags.map(tag => (
+                                    <button
+                                        key={tag}
+                                        onClick={() => setActiveTag(tag)}
+                                        className={`tag-pill ${activeTag === tag ? 'active' : ''}`}
+                                        style={activeTag === tag ? { '--accent-color': '#8a7e66' } : {}} // Default gold accent for active tag
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Grid */}
+                    <div className="flex-1 px-4 overflow-y-auto no-scrollbar space-y-4 max-w-lg mx-auto w-full">
+                        {displayedPoems.length > 0 ? displayedPoems.map(p => {
+                            const accent = getAccent(p.theme);
+                            return (
+                                <div 
+                                    key={p.id} 
+                                    onClick={() => { setActivePoem(p); setView('read'); }} 
+                                    className="card-frame p-6 rounded-lg active:scale-95 cursor-pointer"
+                                    style={{ '--accent-color': accent }}
+                                >
+                                    <div className="flex justify-between items-start mb-2 relative z-10">
+                                        <h3 className="text-xl font-bold" style={{ color: accent }}>
+                                            {p.title}
+                                        </h3>
+                                        
+                                        {/* Robust Delete Button */}
+                                        <button 
+                                            onClick={(e) => handleDelete(p.id, e)} 
+                                            className="p-2 bg-[var(--bg-card)] rounded-full text-[var(--text-muted)] hover:text-red-400 border border-[var(--border)] shadow-sm z-50 pointer-events-auto"
+                                            title="Delete Poem"
+                                        >
+                                            <Icon name="Trash" size={16} />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="text-sm text-[var(--text-muted)] mb-4 flex justify-between relative z-10">
+                                        <span>{p.author}</span>
+                                        {p.publishedDate && <span className="opacity-50 text-xs">{p.publishedDate}</span>}
+                                    </div>
+                                    
+                                    {p.tags.length > 0 && (
+                                        <div className="flex gap-2 relative z-10">
+                                            {p.tags.map(t => (
+                                                <span key={t} className="text-[10px] uppercase tracking-wider px-2 py-1 rounded bg-[var(--bg-input)] text-[var(--text-muted)] opacity-80">
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }) : (
+                            <div className="text-center py-20 text-[var(--text-muted)] opacity-50 italic">
+                                No entries match filters.
+                            </div>
+                        )}
+                        <div className="h-10"></div>
+                    </div>
+
+                    {/* FAB */}
+                    <div className="fixed bottom-8 right-6 z-40">
+                        <button 
+                            onClick={() => setView('add')}
+                            className="w-16 h-16 bg-[var(--text-main)] text-[var(--bg-main)] rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-90 transition-transform"
+                        >
+                            <Icon name="Plus" size={32} />
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
