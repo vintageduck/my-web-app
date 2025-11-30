@@ -7,6 +7,7 @@
     
     <!-- Custom Icon -->
     <link rel="apple-touch-icon" href="icon.png">
+
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -120,7 +121,9 @@
                 Search: <g><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g>,
                 Sort: <path d="M3 6h18M7 12h10M10 18h4"/>,
                 Edit: <g><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></g>,
-                Upload: <g><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></g>
+                Upload: <g><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></g>,
+                Music: <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>,
+                Headphones: <path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
@@ -158,12 +161,14 @@
             publishedDate: '1927',
             content: `Go placidly amid the noise and the haste, and remember what peace there may be in silence. As far as possible, without surrender, be on good terms with all persons.\n\nSpeak your truth quietly and clearly; and listen to others, even to the dull and the ignorant; they too have their story.`,
             tags: ['Inspiration'],
-            theme: 'gold'
+            theme: 'gold',
+            type: 'poem', // 'poem' or 'song'
+            performanceLink: ''
         };
 
         // --- APP ---
         const App = () => {
-            const [view, setView] = useState('library'); // 'library' | 'read' | 'add' | 'settings'
+            const [view, setView] = useState('library'); 
             const [isLoaded, setIsLoaded] = useState(false);
             
             // Data
@@ -173,6 +178,7 @@
             // Filters & Sort
             const [searchQuery, setSearchQuery] = useState('');
             const [activeTag, setActiveTag] = useState('All');
+            const [activeType, setActiveType] = useState('All'); // 'All' | 'Poem' | 'Song'
             const [sortBy, setSortBy] = useState('added_desc');
 
             // Global Config
@@ -187,6 +193,8 @@
             const [newContent, setNewContent] = useState('');
             const [newTags, setNewTags] = useState('');
             const [newColor, setNewColor] = useState('gold');
+            const [newType, setNewType] = useState('poem');
+            const [newLink, setNewLink] = useState('');
 
             // Load Data
             useEffect(() => {
@@ -232,6 +240,8 @@
                 setNewContent(activePoem.content);
                 setNewTags((activePoem.tags || []).join(' '));
                 setNewColor(activePoem.theme);
+                setNewType(activePoem.type || 'poem');
+                setNewLink(activePoem.performanceLink || '');
                 setView('add');
             };
 
@@ -248,7 +258,10 @@
                     publishedDate: newDate,
                     content: newContent,
                     tags: tagsArray.length ? tagsArray : [],
-                    theme: newColor
+                    theme: newColor,
+                    type: newType,
+                    performanceLink: newLink,
+                    dateAdded: editingId ? activePoem.dateAdded : Date.now() // Preserve original add date
                 };
                 
                 if (editingId) {
@@ -260,7 +273,7 @@
                 
                 // Reset
                 setNewTitle(''); setNewAuthor(''); setNewDate(''); setNewContent(''); setNewTags(''); 
-                setNewColor('gold'); setEditingId(null);
+                setNewColor('gold'); setEditingId(null); setNewType('poem'); setNewLink('');
                 
                 // Return to correct view
                 setView(editingId ? 'read' : 'library');
@@ -268,7 +281,7 @@
 
             const handleDelete = (id, e) => {
                 if (e) e.stopPropagation();
-                if (confirm("Permanently delete this poem?")) {
+                if (confirm("Permanently delete this entry?")) {
                     setPoems(prev => prev.filter(p => p.id !== id));
                     if (activePoem?.id === id) {
                         setActivePoem(null);
@@ -281,7 +294,8 @@
             const exportMarkdown = () => {
                 let md = "# Poetry Pocket\n\n";
                 poems.forEach(p => {
-                    md += `## ${p.title}\n*${p.author || 'Unknown'} (${p.publishedDate || 'n.d.'})*\n\n${p.content}\n\nTags: #${p.tags.join(' #')}\n\n---\n\n`;
+                    const icon = p.type === 'song' ? '🎵 ' : '';
+                    md += `## ${icon}${p.title}\n*${p.author || 'Unknown'} (${p.publishedDate || 'n.d.'})*\n\n${p.content}\n\nLink: ${p.performanceLink || 'None'}\nTags: #${p.tags.join(' #')}\n\n---\n\n`;
                 });
                 navigator.clipboard.writeText(md).then(() => alert("Copied markdown for Obsidian!"));
             };
@@ -306,18 +320,29 @@
                 }
             };
 
+            const formatDate = (timestamp) => {
+                if (!timestamp) return '';
+                return new Date(timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            };
+
             // Helpers & Sorts
             const getAccent = (id) => THEMES.find(t => t.id === id)?.color || '#8a7e66';
             const allTags = ['All', ...new Set(poems.flatMap(p => p.tags || []))];
 
             const getProcessedPoems = () => {
                 let filtered = poems.filter(p => {
+                    // Type Filter
+                    if (activeType === 'Poems' && p.type === 'song') return false;
+                    if (activeType === 'Songs' && p.type !== 'song') return false;
+
+                    // Search
                     const searchLower = searchQuery.toLowerCase();
                     const matchesSearch = 
                         (p.title || '').toLowerCase().includes(searchLower) ||
                         (p.author || '').toLowerCase().includes(searchLower) ||
                         (p.content || '').toLowerCase().includes(searchLower);
                     
+                    // Tag
                     const matchesTag = activeTag === 'All' ? true : (p.tags || []).includes(activeTag);
                     return matchesSearch && matchesTag;
                 });
@@ -340,7 +365,8 @@
                 const accent = getAccent(activePoem.theme);
                 return (
                     <div className="min-h-screen pb-20 fade-in" style={{ '--accent-color': accent }}>
-                        <div className="p-4 flex justify-between items-center sticky top-0 bg-[var(--bg-main)] bg-opacity-95 backdrop-blur-sm z-50">
+                        {/* Header: Fully Solid Background, High Z-Index */}
+                        <div className="p-4 flex justify-between items-center sticky top-0 bg-[var(--bg-main)] z-[100] border-b border-[var(--border)] shadow-sm">
                             <button onClick={() => setView('library')} className="text-[var(--text-muted)] flex items-center gap-2">
                                 <Icon name="ArrowLeft" /> Library
                             </button>
@@ -356,7 +382,14 @@
                         </div>
 
                         <div className="p-6 flex justify-center">
-                            <div className="w-full max-w-lg card-frame p-8 md:p-12 rounded-lg">
+                            <div className="w-full max-w-lg card-frame p-8 md:p-12 rounded-lg relative">
+                                {/* Type Icon for Song */}
+                                {activePoem.type === 'song' && (
+                                    <div className="absolute top-4 right-4 text-[var(--text-muted)] opacity-20">
+                                        <Icon name="Music" size={24} />
+                                    </div>
+                                )}
+                                
                                 <h1 className="text-3xl md:text-4xl text-center font-bold mb-2 uppercase tracking-wide" style={{ color: accent }}>
                                     {activePoem.title}
                                 </h1>
@@ -364,10 +397,35 @@
                                     {activePoem.author} 
                                     {activePoem.publishedDate && <span className="text-xs ml-1 opacity-60">({activePoem.publishedDate})</span>}
                                 </div>
-                                <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap text-justify">
+                                
+                                <div className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap text-justify pb-8">
                                     {activePoem.content}
                                 </div>
-                                <div className="mt-12 text-center opacity-40 text-xl" style={{ color: accent }}>✦ ✦ ✦</div>
+                                
+                                <div className="mt-8 pt-6 border-t border-[var(--border)] flex flex-col items-center gap-4">
+                                    <div className="opacity-40 text-xl" style={{ color: accent }}>✦ ✦ ✦</div>
+                                    
+                                    {/* Footer Info */}
+                                    <div className="flex flex-col items-center gap-2 w-full">
+                                        {activePoem.performanceLink && (
+                                            <a 
+                                                href={activePoem.performanceLink} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-2 text-xs uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--border)] hover:bg-[var(--bg-button)] transition-colors"
+                                                style={{ color: accent }}
+                                            >
+                                                <Icon name="Headphones" size={14} /> Performance
+                                            </a>
+                                        )}
+                                        
+                                        {activePoem.dateAdded && (
+                                            <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] opacity-40 mt-2">
+                                                Added {formatDate(activePoem.dateAdded)}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -380,24 +438,42 @@
                     <div className="min-h-screen p-6 pb-20 fade-in">
                         <div className="flex justify-between items-center mb-6">
                             <button onClick={() => setView(editingId ? 'read' : 'library')}><Icon name="ArrowLeft" /></button>
-                            <h2 className="text-lg font-bold uppercase tracking-widest">{editingId ? 'Edit Poem' : 'New Poem'}</h2>
+                            <h2 className="text-lg font-bold uppercase tracking-widest">{editingId ? 'Edit Entry' : 'New Entry'}</h2>
                             <div className="w-5"></div>
                         </div>
 
                         <div className="space-y-6 max-w-lg mx-auto">
+                            {/* Type Toggle */}
+                            <div className="flex bg-[var(--bg-button)] p-1 rounded-lg">
+                                <button 
+                                    onClick={() => setNewType('poem')}
+                                    className={`flex-1 py-2 text-xs uppercase tracking-wider rounded transition-all ${newType === 'poem' ? 'bg-[var(--bg-card)] shadow-sm text-[var(--text-main)]' : 'text-[var(--text-muted)] opacity-60'}`}
+                                >
+                                    Poem
+                                </button>
+                                <button 
+                                    onClick={() => setNewType('song')}
+                                    className={`flex-1 py-2 text-xs uppercase tracking-wider rounded transition-all ${newType === 'song' ? 'bg-[var(--bg-card)] shadow-sm text-[var(--text-main)]' : 'text-[var(--text-muted)] opacity-60'}`}
+                                >
+                                    Song
+                                </button>
+                            </div>
+
                             <input 
                                 placeholder="Title" value={newTitle} onChange={e => setNewTitle(e.target.value)}
                                 className="w-full bg-transparent border-b border-[var(--border)] py-3 text-2xl font-bold placeholder-opacity-30 placeholder-[var(--text-muted)] outline-none"
                             />
                             
                             <textarea 
-                                placeholder="Paste your poem here..." value={newContent} onChange={e => setNewContent(e.target.value)}
+                                placeholder={newType === 'song' ? "Paste lyrics here..." : "Paste poem here..."}
+                                value={newContent} onChange={e => setNewContent(e.target.value)}
                                 className="w-full h-64 bg-[var(--bg-input)] rounded p-4 text-lg leading-relaxed outline-none resize-none"
                             />
 
                             <div className="grid grid-cols-2 gap-4">
                                 <input 
-                                    placeholder="Author" value={newAuthor} onChange={e => setNewAuthor(e.target.value)}
+                                    placeholder={newType === 'song' ? "Artist/Writer" : "Author"}
+                                    value={newAuthor} onChange={e => setNewAuthor(e.target.value)}
                                     className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none"
                                 />
                                 <input 
@@ -405,7 +481,13 @@
                                     className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none text-right"
                                 />
                             </div>
+                            
+                            <input 
+                                placeholder="Performance Link (YouTube/Spotify URL)" value={newLink} onChange={e => setNewLink(e.target.value)}
+                                className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none text-sm"
+                            />
 
+                            {/* Tags & Theme Section */}
                             <div className="bg-[var(--bg-card)] p-4 rounded-lg border border-[var(--border)] space-y-4">
                                 <input 
                                     placeholder="Tags (e.g. Sleep, Nature)" value={newTags} onChange={e => setNewTags(e.target.value)}
@@ -424,7 +506,7 @@
                             </div>
 
                             <button onClick={handleSave} className="w-full bg-[var(--text-main)] text-[var(--bg-main)] py-4 font-bold uppercase tracking-widest rounded shadow-lg hover:opacity-90 transition-opacity">
-                                {editingId ? 'Update Poem' : 'Save to Pocket'}
+                                {editingId ? 'Update Entry' : 'Save to Pocket'}
                             </button>
                         </div>
                     </div>
@@ -515,12 +597,26 @@
                         <div className="relative">
                             <span className="absolute left-3 top-2.5 text-[var(--text-muted)] opacity-50"><Icon name="Search" size={18}/></span>
                             <input 
-                                type="text" placeholder="Search title, author..." 
+                                type="text" placeholder="Search..." 
                                 value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                                 className="w-full bg-[var(--bg-input)] pl-10 pr-4 py-2 rounded-lg text-sm outline-none focus:ring-1 ring-[var(--text-muted)] transition-all"
                             />
                         </div>
+                        
+                        {/* Type Filter Tabs */}
+                        <div className="flex bg-[var(--bg-button)] p-1 rounded-lg">
+                            {['All', 'Poems', 'Songs'].map(type => (
+                                <button
+                                    key={type}
+                                    onClick={() => setActiveType(type)}
+                                    className={`flex-1 py-1.5 text-xs uppercase tracking-wider rounded transition-all ${activeType === type ? 'bg-[var(--bg-card)] shadow-sm text-[var(--text-main)]' : 'text-[var(--text-muted)] opacity-60'}`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
 
+                        {/* Sort & Tags Row */}
                         <div className="flex justify-between items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                             <div className="relative shrink-0">
                                 <select 
@@ -562,14 +658,14 @@
                                     style={{ '--accent-color': accent }}
                                 >
                                     <div className="flex justify-between items-start mb-2 relative z-10">
-                                        <h3 className="text-xl font-bold" style={{ color: accent }}>
+                                        <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: accent }}>
                                             {p.title}
+                                            {p.type === 'song' && <span className="opacity-50 text-sm"><Icon name="Music" size={14} /></span>}
                                         </h3>
                                         
                                         <button 
                                             onClick={(e) => handleDelete(p.id, e)} 
                                             className="p-2 bg-[var(--bg-card)] rounded-full text-[var(--text-muted)] hover:text-red-400 border border-[var(--border)] shadow-sm z-50 pointer-events-auto"
-                                            title="Delete Poem"
                                         >
                                             <Icon name="Trash" size={16} />
                                         </button>
