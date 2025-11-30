@@ -112,12 +112,13 @@
             border: 3px double #8a7e66; opacity: 0.3; pointer-events: none; z-index: 0;
         }
 
-        /* Fixed Header */
+        /* Fixed Header Logic */
         .fixed-header {
-            position: fixed; top: 0; left: 0; right: 0;
+            position: fixed;
+            top: 0; left: 0; right: 0;
             background-color: var(--header-bg);
             z-index: 50;
-            padding-top: env(safe-area-inset-top);
+            padding-top: env(safe-area-inset-top); /* This fills the notch area */
             border-bottom: 1px solid var(--border);
         }
         
