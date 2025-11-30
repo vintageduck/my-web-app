@@ -99,6 +99,11 @@
             /* Border: Matching dusty rose */
             border-color: #dccbcb !important;
         }
+        .pattern-ponting {
+            background-color: #2e2972 !important;
+            color: #E8E6DF !important;
+            border-color: #252159 !important;
+        }
 
         /* Card Styles */
         .card-frame {
@@ -122,6 +127,10 @@
         .pattern-velvet::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 3px double #5e3a3d; opacity: 0.3; pointer-events: none; z-index: 0;
+        }
+        .pattern-ponting::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 3px double #252159; opacity: 0.3; pointer-events: none; z-index: 0;
         }
 
         /* --- THE MAGIC HEADER FIX --- */
@@ -188,7 +197,8 @@
             { id: 'sage', color: '#738062', name: 'Sage' },
             { id: 'rose', color: '#9c6b6b', name: 'Rose' },
             { id: 'morris', color: '#4a5d4a', name: 'Morris' },
-            { id: 'velvet', color: '#753a3a', name: 'Velvet' }
+            { id: 'velvet', color: '#753a3a', name: 'Velvet' },
+            { id: 'ponting', color: '#252c6de', name: 'Ponting' }
         ];
 
         const FONTS = [
@@ -227,10 +237,12 @@
             const accent = getAccent(p.theme);
             const isMorris = p.theme === 'morris';
             const isVelvet = p.theme === 'velvet';
+            const isPonting = p.theme === 'ponting';
             
             let cardClass = '';
             if(isMorris) cardClass = 'pattern-morris';
             if(isVelvet) cardClass = 'pattern-velvet';
+            if(isPonting) cardClass = 'pattern-ponting';
 
             return (
                 <div onClick={() => onClick(p)} className={`card-frame p-6 rounded-lg active:scale-95 cursor-pointer ${cardClass}`} style={{ '--accent-color': accent }}>
@@ -447,9 +459,11 @@
                 const accent = getAccent(activePoem.theme);
                 const isMorris = activePoem.theme === 'morris';
                 const isVelvet = activePoem.theme === 'velvet';
+                const isPonting = activePoem.theme === 'ponting';
                 let patternClass = '';
                 if (isMorris) patternClass = 'pattern-morris';
                 if (isVelvet) patternClass = 'pattern-velvet';
+                if (isPonting) patternClass = 'pattern-ponting';
 
                 return (
                     <div className="min-h-screen bg-[var(--bg-main)]" style={{ '--accent-color': accent }}>
