@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Pocket</title>
-    
     <link rel="apple-touch-icon" href="icon.png">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -64,115 +62,88 @@
             transition: background-color var(--transition), color var(--transition);
         }
 
-        /* --- THEME SPECIFIC COLORS (Auto-switching for Light Mode) --- */
-        
-        /* Default Colors (Dark Mode) */
+        /* --- THEME SPECIFIC COLORS --- */
         .t-gold     { --accent: #8a7e66; --accent-border: #8a7e66; }
         .t-sapphire { --accent: #5e7b87; --accent-border: #5e7b87; }
         .t-sage     { --accent: #738062; --accent-border: #738062; }
         .t-rose     { --accent: #9c6b6b; --accent-border: #9c6b6b; }
         
-        /* Light Mode Overrides (Darker, richer versions for contrast against white) */
         body.theme-dawn .t-gold     { --accent: #5c523e; --accent-border: #c9c2b3; }
         body.theme-dawn .t-sapphire { --accent: #364952; --accent-border: #b1c1c7; }
         body.theme-dawn .t-sage     { --accent: #454d3a; --accent-border: #bdc4b3; }
         body.theme-dawn .t-rose     { --accent: #634040; --accent-border: #d4baba; }
 
-        /* --- PATTERN THEMES (Sophisticated Update) --- */
-
-        /* 1. MORRIS (Foresty/Patterned) */
+        /* --- PATTERN THEMES --- */
         .t-morris { 
-            background-color: #2F3E34 !important; 
-            color: #E8E6DF !important; 
-            --accent: #E8E6DF; /* Text color inside card */
-            --accent-border: #5C6F63;
+            background-color: #2F3E34 !important; color: #E8E6DF !important; 
+            --accent: #E8E6DF; --accent-border: #5C6F63;
         }
         .t-morris::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 3px double #8a7e66; opacity: 0.3; pointer-events: none; z-index: 0;
         }
 
-        /* 2. VELVET (Deep Red) */
         .t-velvet {
             background-color: #3b1e20 !important;
             background-image: radial-gradient(circle, #4a2528 10%, transparent 10%), radial-gradient(circle, #4a2528 10%, transparent 10%);
             background-size: 20px 20px;
             color: #ebd5d5 !important;
-            --accent: #ebd5d5;
-            --accent-border: #5e3a3d;
+            --accent: #ebd5d5; --accent-border: #5e3a3d;
         }
         .t-velvet::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 3px double #5e3a3d; opacity: 0.3; pointer-events: none; z-index: 0;
         }
         body.theme-dawn .t-velvet {
-            background-color: #f4ecec !important;
-            color: #4a2225 !important;
-            --accent: #4a2225;
-            --accent-border: #dccbcb;
+            background-color: #f4ecec !important; color: #4a2225 !important;
+            --accent: #4a2225; --accent-border: #dccbcb;
         }
 
-        /* 3. PONTING (Crystalline Blue) */
         .t-ponting {
             background-color: #162032 !important; 
-            background-image: 
-                radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 10% 90%, rgba(129, 140, 248, 0.15) 0%, transparent 60%) !important;
+            background-image: radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.15) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(129, 140, 248, 0.15) 0%, transparent 60%) !important;
             color: #e0f2fe !important; 
-            --accent: #e0f2fe;
-            --accent-border: #1e3a8a; /* Darker border */
+            --accent: #e0f2fe; --accent-border: #1e3a8a;
         }
         .t-ponting::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #7dd3fc; opacity: 0.15; pointer-events: none; z-index: 0;
         }
         body.theme-dawn .t-ponting {
-            background-color: #f0f9ff !important;
-            color: #0c4a6e !important;
+            background-color: #f0f9ff !important; color: #0c4a6e !important;
             --accent: #0c4a6e;
         }
 
-        /* 4. inferno (Deep Wine - Toned Down) */
-        .t-inferno {
-            background-color: #1a0505 !important; /* Very dark brownish red */
-            background-image: 
-                radial-gradient(circle at 90% 10%, rgba(159, 18, 57, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 10% 90%, rgba(136, 19, 55, 0.15) 0%, transparent 60%) !important;
+        .t-garnet {
+            background-color: #1a0505 !important; 
+            background-image: radial-gradient(circle at 90% 10%, rgba(159, 18, 57, 0.15) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(136, 19, 55, 0.15) 0%, transparent 60%) !important;
             color: #ffe4e6 !important; 
-            --accent: #ffe4e6;
-            --accent-border: #4c0519; /* Subtle deep red border */
+            --accent: #ffe4e6; --accent-border: #4c0519;
         }
-        .t-inferno::before {
+        .t-garnet::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #fda4af; opacity: 0.1; pointer-events: none; z-index: 0;
         }
-        body.theme-dawn .t-inferno {
-            background-color: #fff1f2 !important;
-            color: #881337 !important;
+        body.theme-dawn .t-garnet {
+            background-color: #fff1f2 !important; color: #881337 !important;
             --accent: #881337;
         }
 
-        /* 5. forest (Deep Forest - Toned Down) */
-        .t-forest {
-            background-color: #022c22 !important; /* Deepest green */
-            background-image: 
-                radial-gradient(circle at 90% 10%, rgba(6, 78, 59, 0.3) 0%, transparent 60%),
-                radial-gradient(circle at 10% 90%, rgba(2, 44, 34, 0.3) 0%, transparent 60%) !important;
+        .t-emerald {
+            background-color: #022c22 !important; 
+            background-image: radial-gradient(circle at 90% 10%, rgba(6, 78, 59, 0.3) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(2, 44, 34, 0.3) 0%, transparent 60%) !important;
             color: #d1fae5 !important; 
-            --accent: #d1fae5;
-            --accent-border: #064e3b; /* Subtle deep green border */
+            --accent: #d1fae5; --accent-border: #064e3b;
         }
-        .t-forest::before {
+        .t-emerald::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #6ee7b7; opacity: 0.1; pointer-events: none; z-index: 0;
         }
-        body.theme-dawn .t-forest {
-            background-color: #f0fdf4 !important;
-            color: #064e3b !important;
+        body.theme-dawn .t-emerald {
+            background-color: #f0fdf4 !important; color: #064e3b !important;
             --accent: #064e3b;
         }
 
-        /* --- CARD STYLES --- */
         .card-frame {
             position: relative;
             background: var(--bg-card);
@@ -182,16 +153,13 @@
             overflow: hidden;
         }
         
-        /* Generic border for non-pattern themes */
-        .card-frame:not(.t-morris):not(.t-velvet):not(.t-ponting):not(.t-inferno):not(.t-forest)::before {
+        .card-frame:not(.t-morris):not(.t-velvet):not(.t-ponting):not(.t-garnet):not(.t-emerald)::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid var(--accent-border); opacity: 0.3; pointer-events: none; z-index: 0;
         }
         
-        /* Titles use the css variable now */
         .theme-title { color: var(--accent); }
 
-        /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .sticky-header {
             position: sticky; top: 0; z-index: 50;
@@ -221,7 +189,6 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo, useRef } = React;
 
-        // --- ICONS ---
         const Icon = ({ name, size = 20, className }) => {
             const icons = {
                 ArrowLeft: <path d="m12 19-7-7 7-7 M19 12H5"/>,
@@ -238,9 +205,9 @@
                 Music: <g><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></g>,
                 Headphones: <g><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></g>,
                 User: <g><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>,
-                List: <g><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></g>
+                List: <g><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></g>,
                 Spotify: <g><circle cx="12" cy="12" r="10"/><path d="M8 11.5c2.5-1 5.5-1 8 0 M7 14.5c3-1 6-1 9 0 M6 8.5c4-1.5 8-1.5 12 0"/></g>,
-                YouTube: <g><rect x="2" y="4" width="20" height="16" rx="4"/><polygon points="10,8 16,12 10,16" fill="currentColor"/></g>,
+                YouTube: <g><rect x="2" y="4" width="20" height="16" rx="4"/><polygon points="10,8 16,12 10,16" fill="currentColor"/></g>
             };
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -249,7 +216,6 @@
             );
         };
 
-        // --- CONFIG ---
         const THEMES = [
             { id: 'gold', color: '#8a7e66', name: 'Gold' },
             { id: 'sapphire', color: '#5e7b87', name: 'Sapphire' },
@@ -258,8 +224,8 @@
             { id: 'morris', color: '#4a5d4a', name: 'Morris' },
             { id: 'velvet', color: '#753a3a', name: 'Velvet' },
             { id: 'ponting', color: '#38bdf8', name: 'Ponting' },
-            { id: 'inferno', color: '#9f1239', name: 'Inferno' }, // Darker Red for UI icon
-            { id: 'forest', color: '#064e3b', name: 'Forest' } // Darker Green for UI icon
+            { id: 'garnet', color: '#9f1239', name: 'Garnet' },
+            { id: 'emerald', color: '#064e3b', name: 'Emerald' }
         ];
 
         const FONTS = [
@@ -286,11 +252,11 @@
             tags: ['Inspiration'],
             theme: 'gold',
             type: 'poem',
-            performanceLink: '',
+            youtubeLink: '',
+            spotifyLink: '',
             dateAdded: Date.now()
         };
 
-        // --- HELPERS ---
         const formatContent = (text) => {
             if (!text) return null;
             return text.split('\n').map((line, i) => (
@@ -309,7 +275,6 @@
             });
         };
 
-        // --- NEW: CUSTOM AUTOCOMPLETE COMPONENT ---
         const AutocompleteInput = ({ value, onChange, options, placeholder, className }) => {
             const [showSuggestions, setShowSuggestions] = useState(false);
             const wrapperRef = useRef(null);
@@ -352,7 +317,6 @@
             );
         };
 
-        // --- COMPONENTS ---
         const PoemCard = ({ p, onClick, onDelete }) => {
             if (!p) return null; 
             return (
@@ -379,7 +343,6 @@
             );
         };
 
-        // --- MAIN APP ---
         const App = () => {
             const [view, setView] = useState('library'); 
             const [isLoaded, setIsLoaded] = useState(false);
@@ -401,40 +364,32 @@
             const [newTags, setNewTags] = useState('');
             const [newColor, setNewColor] = useState('gold');
             const [newType, setNewType] = useState('poem');
+            
+            // Separate state for links
             const [newYoutube, setNewYoutube] = useState('');
             const [newSpotify, setNewSpotify] = useState('');
-            
-            // --- NEW: AURA CALCULATION ---
+
+            const uniqueAuthors = useMemo(() => [...new Set(poems.map(p => p.author).filter(Boolean))].sort(), [poems]);
+            const uniqueTags = useMemo(() => [...new Set(poems.flatMap(p => p.tags || []))].sort(), [poems]);
+
+            // --- AURA STATS ---
             const auraStats = useMemo(() => {
                 if (!poems.length) return [];
-                
-                // 1. Count usage
                 const counts = {};
-                poems.forEach(p => {
-                    counts[p.theme] = (counts[p.theme] || 0) + 1;
-                });
-                
-                // 2. Map to theme objects and calculate %
+                poems.forEach(p => counts[p.theme] = (counts[p.theme] || 0) + 1);
                 const stats = THEMES.map(t => {
                     const count = counts[t.id] || 0;
                     const percent = Math.round((count / poems.length) * 100);
                     return { ...t, count, percent };
                 });
-            
-                // 3. Filter out unused themes and sort by most used
                 return stats.filter(s => s.count > 0).sort((a, b) => b.count - a.count);
             }, [poems]);
-            
             const dominantAura = auraStats.length > 0 ? auraStats[0] : null;
-
-            // Autocomplete Data
-            const uniqueAuthors = useMemo(() => [...new Set(poems.map(p => p.author).filter(Boolean))].sort(), [poems]);
-            const uniqueTags = useMemo(() => [...new Set(poems.flatMap(p => p.tags || []))].sort(), [poems]);
 
             useEffect(() => {
                 try {
-                    const savedPoems = JSON.parse(localStorage.getItem('pp_poems_v14'));
-                    const savedConfig = JSON.parse(localStorage.getItem('pp_config_v14'));
+                    const savedPoems = JSON.parse(localStorage.getItem('pp_poems_v15')); // incremented version
+                    const savedConfig = JSON.parse(localStorage.getItem('pp_config_v15'));
                     if (savedPoems && Array.isArray(savedPoems)) setPoems(savedPoems);
                     else setPoems([DEFAULT_POEM]);
                     if (savedConfig) {
@@ -449,8 +404,8 @@
 
             useEffect(() => {
                 if (!isLoaded) return;
-                localStorage.setItem('pp_poems_v14', JSON.stringify(poems));
-                localStorage.setItem('pp_config_v14', JSON.stringify({ theme: appTheme, font: activeFont }));
+                localStorage.setItem('pp_poems_v15', JSON.stringify(poems));
+                localStorage.setItem('pp_config_v15', JSON.stringify({ theme: appTheme, font: activeFont }));
                 document.body.className = `theme-${appTheme}`;
                 const fontCSS = FONTS.find(f => f.id === activeFont)?.css || FONTS[0].css;
                 document.documentElement.style.setProperty('--current-font', fontCSS);
@@ -468,9 +423,11 @@
                 setNewTags((activePoem.tags || []).join(' '));
                 setNewColor(activePoem.theme);
                 setNewType(activePoem.type || 'poem');
-                // NEW: Load separate links (with fallback for old data)
+                
+                // Set separate links (handling old performanceLink as fallback)
                 setNewYoutube(activePoem.youtubeLink || activePoem.performanceLink || '');
-                setNewSpotify(activePoem.spotifyLink || '');                
+                setNewSpotify(activePoem.spotifyLink || '');
+                
                 setView('add');
             };
 
@@ -482,10 +439,8 @@
                     id: id, title: newTitle || 'Untitled', author: newAuthor, publishedDate: newDate,
                     content: newContent, tags: tagsArray.length ? tagsArray : [], theme: newColor,
                     type: newType, 
-                    // NEW: Save separate links
                     youtubeLink: newYoutube,
                     spotifyLink: newSpotify,
-                    // remove performanceLink completely to clean up future data
                     dateAdded: editingId ? activePoem.dateAdded : Date.now()
                 };
                 if (editingId) {
@@ -495,9 +450,9 @@
                     setPoems([poem, ...poems]);
                 }
                 setNewTitle(''); setNewAuthor(''); setNewDate(''); setNewContent(''); setNewTags(''); 
-                setNewColor('gold'); setEditingId(null); setNewType('poem'); setNewLink('');
+                setNewColor('gold'); setEditingId(null); setNewType('poem'); 
+                setNewYoutube(''); setNewSpotify('');
                 setView(editingId ? 'read' : 'library');
-                setNewYoutube(''); setNewSpotify(''); // Clear inputs
             };
 
             const handleDelete = (id, e) => {
@@ -529,7 +484,9 @@
                         if (Array.isArray(parsed)) {
                             const cleaned = parsed.map(p => ({
                                 ...p, tags: p.tags || [], type: p.type || 'poem',
-                                performanceLink: p.performanceLink || '', dateAdded: p.dateAdded || Date.now()
+                                youtubeLink: p.youtubeLink || p.performanceLink || '',
+                                spotifyLink: p.spotifyLink || '',
+                                dateAdded: p.dateAdded || Date.now()
                             }));
                             setPoems(cleaned);
                             alert("Library restored successfully!");
@@ -621,7 +578,6 @@
                                 <div className="mt-8 pt-6 border-t border-[var(--border)] flex flex-col items-center gap-6">
                                     <div className="opacity-40 text-xl theme-title">✦ ✦ ✦</div>
                                     
-                                    {/* CLICKABLE TAGS */}
                                     {activePoem.tags && activePoem.tags.length > 0 && (
                                         <div className="flex flex-wrap justify-center gap-2">
                                             {activePoem.tags.map(tag => (
@@ -636,19 +592,19 @@
                                         </div>
                                     )}
 
-                                    <div className="flex flex-col items-center gap-2 w-full">
+                                    <div className="flex flex-col items-center gap-3 w-full">
                                         <div className="flex flex-wrap justify-center gap-3 w-full">
-                                    {activePoem.youtubeLink && (
-                                        <a href={activePoem.youtubeLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--border)] hover:bg-[var(--bg-button)] transition-colors theme-title">
-                                            <Icon name="YouTube" size={14} /> Watch
-                                        </a>
-                                    )}
-                                    {activePoem.spotifyLink && (
-                                        <a href={activePoem.spotifyLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--border)] hover:bg-[var(--bg-button)] transition-colors theme-title">
-                                            <Icon name="Spotify" size={14} /> Listen
-                                        </a>
-                                    )}
-                                </div>
+                                            {activePoem.youtubeLink && (
+                                                <a href={activePoem.youtubeLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--border)] hover:bg-[var(--bg-button)] transition-colors theme-title">
+                                                    <Icon name="YouTube" size={14} /> Watch
+                                                </a>
+                                            )}
+                                            {activePoem.spotifyLink && (
+                                                <a href={activePoem.spotifyLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--border)] hover:bg-[var(--bg-button)] transition-colors theme-title">
+                                                    <Icon name="Spotify" size={14} /> Listen
+                                                </a>
+                                            )}
+                                        </div>
                                         {activePoem.dateAdded && <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] opacity-40 mt-2">Added {formatDate(activePoem.dateAdded)}</div>}
                                     </div>
                                 </div>
@@ -676,7 +632,6 @@
                             <textarea placeholder={newType === 'song' ? "Lyrics... (Use **bold** and *italics*)" : "Poem... (Use **bold** and *italics*)"} value={newContent} onChange={e => setNewContent(e.target.value)} className="w-full h-64 bg-[var(--bg-input)] rounded p-4 text-lg leading-relaxed outline-none resize-none" />
                             
                             <div className="grid grid-cols-2 gap-4">
-                                {/* CUSTOM AUTOCOMPLETE FOR AUTHOR */}
                                 <AutocompleteInput 
                                     value={newAuthor} 
                                     onChange={setNewAuthor} 
@@ -686,6 +641,8 @@
                                 />
                                 <input placeholder="Year/Date" value={newDate} onChange={e => setNewDate(e.target.value)} className="w-full bg-transparent border-b border-[var(--border)] py-2 text-[var(--text-muted)] outline-none text-right" />
                             </div>
+
+                            {/* SPLIT LINKS */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="relative">
                                     <span className="absolute left-0 top-2 text-[var(--text-muted)] opacity-50"><Icon name="YouTube" size={16}/></span>
@@ -695,9 +652,9 @@
                                     <span className="absolute left-0 top-2 text-[var(--text-muted)] opacity-50"><Icon name="Spotify" size={16}/></span>
                                     <input placeholder="Spotify Link" value={newSpotify} onChange={e => setNewSpotify(e.target.value)} className="w-full bg-transparent border-b border-[var(--border)] py-2 pl-6 text-[var(--text-muted)] outline-none text-sm" />
                                 </div>
-                            </div>                            
+                            </div>
+
                             <div className="bg-[var(--bg-card)] p-4 rounded-lg border border-[var(--border)] space-y-4">
-                                {/* CUSTOM AUTOCOMPLETE FOR TAGS */}
                                 <AutocompleteInput 
                                     value={newTags} 
                                     onChange={setNewTags} 
@@ -728,7 +685,7 @@
                         </div>
                         <div className="p-6 pb-20 space-y-8 max-w-lg mx-auto">
                             
-                            {/* --- NEW: AURA STATS SECTION --- */}
+                            {/* AURA STATS */}
                             <div>
                                 <h3 className="text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">Your Aura</h3>
                                 <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
@@ -763,8 +720,7 @@
                                     )}
                                 </div>
                             </div>
-            
-                            {/* Typography Section */}
+
                             <div>
                                 <h3 className="text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">Typography</h3>
                                 <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden">
@@ -776,8 +732,6 @@
                                     ))}
                                 </div>
                             </div>
-            
-                            {/* Backup Section */}
                             <div>
                                 <h3 className="text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">Backup</h3>
                                 <div className="space-y-3">
