@@ -28,7 +28,7 @@
             --transition: 0.3s ease;
         }
 
-        /* --- BASE COLORS --- */
+        /* --- DARK MODE (DUSK) - UNTOUCHED --- */
         body.theme-dusk {
             --bg-main: #121214;
             --bg-card: #1c1c1f;
@@ -41,16 +41,17 @@
             --header-bg: #121214;
         }
 
+        /* --- LIGHT MODE (DAWN) - STATIONERY OVERHAUL --- */
         body.theme-dawn {
-            --bg-main: #f0ebe6;
-            --bg-card: #fdfbf7;
-            --bg-input: #e6e0d8;
-            --text-main: #292524;
-            --text-muted: #78716c;
-            --border: rgba(0,0,0,0.08);
-            --shadow-color: rgba(0,0,0,0.05);
+            --bg-main: #F5F5F0; /* Linen / Desk Grey */
+            --bg-card: #FFFFFF; /* Default fallback */
+            --bg-input: #EBEBE6;
+            --text-main: #2D2D2A; /* Soft Black */
+            --text-muted: #666660;
+            --border: transparent; /* No borders, just shadow */
+            --shadow-color: rgba(0,0,0,0.08); /* Crisp shadow */
             --bg-button: rgba(0,0,0,0.05);
-            --header-bg: #f0ebe6;
+            --header-bg: #F5F5F0;
         }
 
         body {
@@ -63,88 +64,168 @@
             transition: background-color var(--transition), color var(--transition);
         }
 
-        /* --- THEME SPECIFIC COLORS --- */
-        .t-gold     { --accent: #8a7e66; --accent-border: #8a7e66; }
-        .t-sapphire { --accent: #5e7b87; --accent-border: #5e7b87; }
-        .t-sage     { --accent: #738062; --accent-border: #738062; }
-        .t-rose     { --accent: #9c6b6b; --accent-border: #9c6b6b; }
-        
-        body.theme-dawn .t-gold     { --accent: #5c523e; --accent-border: #c9c2b3; }
-        body.theme-dawn .t-sapphire { --accent: #364952; --accent-border: #b1c1c7; }
-        body.theme-dawn .t-sage     { --accent: #454d3a; --accent-border: #bdc4b3; }
-        body.theme-dawn .t-rose     { --accent: #634040; --accent-border: #d4baba; }
+        /* --- DARK MODE ACCENTS --- */
+        body.theme-dusk .t-gold     { --accent: #8a7e66; --accent-border: #8a7e66; }
+        body.theme-dusk .t-sapphire { --accent: #5e7b87; --accent-border: #5e7b87; }
+        body.theme-dusk .t-sage     { --accent: #738062; --accent-border: #738062; }
+        body.theme-dusk .t-rose     { --accent: #9c6b6b; --accent-border: #9c6b6b; }
 
-        /* --- PATTERN THEMES --- */
-        .t-morris { 
+        /* --- LIGHT MODE STATIONERY (Tinted Paper & Deep Ink) --- */
+        
+        /* Gold -> Cream Paper / Coffee Ink */
+        body.theme-dawn .t-gold { 
+            background-color: #FAF5E6 !important; 
+            color: #5C4B35 !important;
+            --accent: #5C4B35; 
+            --accent-border: #D4C5A5;
+            --text-muted: #8C7B65;
+        }
+
+        /* Sapphire -> Alice Blue Paper / Navy Ink */
+        body.theme-dawn .t-sapphire { 
+            background-color: #F0F6FA !important; 
+            color: #23405E !important;
+            --accent: #23405E; 
+            --accent-border: #B5C9D6;
+            --text-muted: #5A738A;
+        }
+
+        /* Sage -> Tea Green Paper / Forest Ink */
+        body.theme-dawn .t-sage { 
+            background-color: #F4F7F2 !important; 
+            color: #3A4F35 !important;
+            --accent: #3A4F35; 
+            --accent-border: #BDC9B8;
+            --text-muted: #6B8066;
+        }
+
+        /* Rose -> Mist Rose Paper / Burgundy Ink */
+        body.theme-dawn .t-rose { 
+            background-color: #FFF5F6 !important; 
+            color: #6B2D36 !important;
+            --accent: #6B2D36; 
+            --accent-border: #E6C2C7;
+            --text-muted: #9C6B72;
+        }
+
+        /* --- PATTERN THEMES (Dual Mode) --- */
+        
+        /* MORRIS */
+        /* Dark */
+        body.theme-dusk .t-morris { 
             background-color: #2F3E34 !important; color: #E8E6DF !important; 
             --accent: #E8E6DF; --accent-border: #5C6F63;
         }
-        .t-morris::before {
+        body.theme-dusk .t-morris::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 3px double #8a7e66; opacity: 0.3; pointer-events: none; z-index: 0;
         }
+        /* Light - Cream Wallpaper */
+        body.theme-dawn .t-morris {
+            background-color: #F2EFE9 !important; color: #1A3320 !important;
+            --accent: #1A3320; --accent-border: #1A3320; --text-muted: #536658;
+        }
+        body.theme-dawn .t-morris::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 3px double #1A3320; opacity: 0.15; pointer-events: none; z-index: 0;
+        }
 
-        .t-velvet {
+        /* VELVET */
+        /* Dark */
+        body.theme-dusk .t-velvet {
             background-color: #3b1e20 !important;
             background-image: radial-gradient(circle, #4a2528 10%, transparent 10%), radial-gradient(circle, #4a2528 10%, transparent 10%);
             background-size: 20px 20px;
             color: #ebd5d5 !important;
             --accent: #ebd5d5; --accent-border: #5e3a3d;
         }
-        .t-velvet::before {
+        body.theme-dusk .t-velvet::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 3px double #5e3a3d; opacity: 0.3; pointer-events: none; z-index: 0;
         }
+        /* Light - Letterpress */
         body.theme-dawn .t-velvet {
-            background-color: #f4ecec !important; color: #4a2225 !important;
-            --accent: #4a2225; --accent-border: #dccbcb;
+            background-color: #F7EBEB !important; color: #4A1A1C !important;
+            background-image: radial-gradient(circle, #EBCBCB 10%, transparent 10%), radial-gradient(circle, #EBCBCB 10%, transparent 10%) !important;
+            --accent: #4A1A1C; --accent-border: #D1B6B6; --text-muted: #8C5E60;
+        }
+        body.theme-dawn .t-velvet::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 3px double #4A1A1C; opacity: 0.1; pointer-events: none; z-index: 0;
         }
 
-        .t-ponting {
+
+        /* PONTING */
+        /* Dark */
+        body.theme-dusk .t-ponting {
             background-color: #162032 !important; 
             background-image: radial-gradient(circle at 90% 10%, rgba(56, 189, 248, 0.15) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(129, 140, 248, 0.15) 0%, transparent 60%) !important;
             color: #e0f2fe !important; 
             --accent: #e0f2fe; --accent-border: #1e3a8a;
         }
-        .t-ponting::before {
+        body.theme-dusk .t-ponting::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #7dd3fc; opacity: 0.15; pointer-events: none; z-index: 0;
         }
+        /* Light - Watermark */
         body.theme-dawn .t-ponting {
-            background-color: #f0f9ff !important; color: #0c4a6e !important;
-            --accent: #0c4a6e;
+            background-color: #F0F7FF !important; color: #0C4A6E !important;
+            background-image: radial-gradient(circle at 90% 10%, rgba(14, 165, 233, 0.1) 0%, transparent 60%) !important;
+            --accent: #0C4A6E; --text-muted: #4F7C96;
+        }
+        body.theme-dawn .t-ponting::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid #0EA5E9; opacity: 0.2; pointer-events: none; z-index: 0;
         }
 
-        .t-garnet {
+        /* GARNET */
+        /* Dark */
+        body.theme-dusk .t-garnet {
             background-color: #1a0505 !important; 
             background-image: radial-gradient(circle at 90% 10%, rgba(159, 18, 57, 0.15) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(136, 19, 55, 0.15) 0%, transparent 60%) !important;
             color: #ffe4e6 !important; 
             --accent: #ffe4e6; --accent-border: #4c0519;
         }
-        .t-garnet::before {
+        body.theme-dusk .t-garnet::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #fda4af; opacity: 0.1; pointer-events: none; z-index: 0;
         }
+        /* Light - Watermark */
         body.theme-dawn .t-garnet {
-            background-color: #fff1f2 !important; color: #881337 !important;
-            --accent: #881337;
+            background-color: #FFF0F3 !important; color: #881337 !important;
+            background-image: radial-gradient(circle at 90% 10%, rgba(225, 29, 72, 0.08) 0%, transparent 60%) !important;
+            --accent: #881337; --text-muted: #9F5465;
+        }
+        body.theme-dawn .t-garnet::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid #E11D48; opacity: 0.15; pointer-events: none; z-index: 0;
         }
 
-        .t-emerald {
+        /* EMERALD */
+        /* Dark */
+        body.theme-dusk .t-emerald {
             background-color: #022c22 !important; 
             background-image: radial-gradient(circle at 90% 10%, rgba(6, 78, 59, 0.3) 0%, transparent 60%), radial-gradient(circle at 10% 90%, rgba(2, 44, 34, 0.3) 0%, transparent 60%) !important;
             color: #d1fae5 !important; 
             --accent: #d1fae5; --accent-border: #064e3b;
         }
-        .t-emerald::before {
+        body.theme-dusk .t-emerald::before {
             content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
             border: 1px solid #6ee7b7; opacity: 0.1; pointer-events: none; z-index: 0;
         }
+        /* Light - Watermark */
         body.theme-dawn .t-emerald {
-            background-color: #f0fdf4 !important; color: #064e3b !important;
-            --accent: #064e3b;
+            background-color: #F0FDF5 !important; color: #064E3B !important;
+            background-image: radial-gradient(circle at 90% 10%, rgba(5, 150, 105, 0.1) 0%, transparent 60%) !important;
+            --accent: #064E3B; --text-muted: #4B7A6A;
+        }
+        body.theme-dawn .t-emerald::before {
+            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 1px solid #059669; opacity: 0.15; pointer-events: none; z-index: 0;
         }
 
+
+        /* --- UI ELEMENTS --- */
         .card-frame {
             position: relative;
             background: var(--bg-card);
